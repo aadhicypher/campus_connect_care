@@ -1,0 +1,17 @@
+# Core SNMP & config
+pysnmp>=4.4.12
+PyYAML>=6.0
+
+# Topology & graph logic
+networkx>=3.2
+
+# System & probing (next phases)
+psutil>=5.9.8
+scapy>=2.5.0
+
+# API & GUI backend (later)
+fastapi>=0.110.0
+uvicorn>=0.29.0
+
+# HTTP/API access (Zabbix integration, future)
+requests>=2.31.0

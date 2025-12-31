@@ -12,3 +12,7 @@ venv/
 # Data / logs
 data/
 *.log
+# Virtual environments
+env/
+venv/
+__init__.py
