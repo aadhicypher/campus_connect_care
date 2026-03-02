@@ -16,3 +16,4 @@ data/
 env/
 venv/
 __init__.py
+.env
