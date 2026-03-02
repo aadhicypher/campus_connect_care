@@ -1,24 +1,22 @@
 import psycopg2
-from psycopg2 import OperationalError
+import os
+from dotenv import load_dotenv
+from pathlib import Path
 
-# Database configuration
-DB_CONFIG = {
-    "dbname": "campusdb",
-    "user": "campusadmin",
-    "password": "campus123",
-    "host": "localhost",
-    "port": 5432
-}
+# Load .env from project root
+env_path = Path(__file__).parent.parent.parent / '.env'
+load_dotenv(dotenv_path=env_path)
 
 def get_connection():
-    """
-    Returns a new PostgreSQL database connection.
-    Each caller is responsible for closing it.
-    """
     try:
-        conn = psycopg2.connect(**DB_CONFIG)
+        conn = psycopg2.connect(
+            dbname=os.getenv('DB_NAME', 'campusdb'),
+            user=os.getenv('DB_USER', 'campusadmin'),
+            password=os.getenv('DB_PASSWORD', 'campus123'),
+            host=os.getenv('DB_HOST', 'localhost'),
+            port=os.getenv('DB_PORT', '5432')
+        )
         return conn
-    except OperationalError as e:
-        print("❌ Database connection failed")
-        print(e)
+    except Exception as e:
+        print(f"❌ Database connection failed: {e}")
         raise
