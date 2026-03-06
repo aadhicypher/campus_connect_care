@@ -12,7 +12,12 @@ class ProblemsScreen extends StatefulWidget {
 
 class _ProblemsScreenState extends State<ProblemsScreen> {
   String _selectedStatus = 'All';
-  final List<String> _statusFilters = ['All', 'Open', 'In Progress', 'Resolved'];
+  final List<String> _statusFilters = [
+    'All',
+    'Open',
+    'In Progress',
+    'Resolved'
+  ];
   List<Map<String, dynamic>> problems = [];
   bool _isLoading = true;
 
@@ -34,10 +39,12 @@ class _ProblemsScreenState extends State<ProblemsScreen> {
   List<Map<String, dynamic>> get _filteredProblems {
     var list = problems;
     if (widget.deviceId != null) {
-      list = list.where((p) => p['deviceId'] == widget.deviceId).toList();
+      list =
+          list.where((p) => p['deviceId'] == widget.deviceId).toList();
     }
     if (_selectedStatus != 'All') {
-      list = list.where((p) => p['status'] == _selectedStatus).toList();
+      list =
+          list.where((p) => p['status'] == _selectedStatus).toList();
     }
     return list;
   }
@@ -45,9 +52,9 @@ class _ProblemsScreenState extends State<ProblemsScreen> {
   Color _severityColor(String severity) {
     switch (severity) {
       case 'critical':
-        return const Color(0xFFFF1744);
+        return const Color(0xFFE53935);
       case 'warning':
-        return const Color(0xFFFFD600);
+        return const Color(0xFFFFB300);
       default:
         return const Color(0xFF00C853);
     }
@@ -56,9 +63,9 @@ class _ProblemsScreenState extends State<ProblemsScreen> {
   Color _statusColor(String status) {
     switch (status) {
       case 'Open':
-        return const Color(0xFFFF1744);
+        return const Color(0xFFE53935);
       case 'In Progress':
-        return const Color(0xFFFFD600);
+        return const Color(0xFFFFB300);
       case 'Resolved':
         return const Color(0xFF00C853);
       default:
@@ -69,72 +76,120 @@ class _ProblemsScreenState extends State<ProblemsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0A0E1A),
+      backgroundColor: const Color(0xFFFAFAFA),
       appBar: AppBar(
-        backgroundColor: const Color(0xFF1A237E),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        centerTitle: true,
         title: Text(
           widget.deviceId != null ? 'Device Problems' : 'All Problems',
           style: const TextStyle(
-              color: Colors.white, fontWeight: FontWeight.bold),
+            color: Color(0xFF262626),
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+          ),
         ),
-        iconTheme: const IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: Color(0xFF262626)),
         actions: [
           IconButton(
-            icon: const Icon(Icons.refresh, color: Colors.white),
+            icon: const Icon(Icons.refresh, color: Color(0xFF262626)),
             onPressed: _loadProblems,
           ),
         ],
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1),
+          child: Divider(color: Colors.grey.shade200, height: 1),
+        ),
       ),
       body: _isLoading
           ? const Center(
-              child: CircularProgressIndicator(color: Colors.white))
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  Color(0xFFE1306C),
+                ),
+              ),
+            )
           : Column(
               children: [
-                // Status filter
+                // Filter chips
                 Container(
-                  height: 50,
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  color: const Color(0xFF1C2333),
-                  child: ListView(
+                  color: Colors.white,
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 12, horizontal: 16),
+                  child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
-                    children: _statusFilters.map((status) {
-                      final isSelected = _selectedStatus == status;
-                      return Padding(
-                        padding: const EdgeInsets.only(right: 8, top: 8),
-                        child: FilterChip(
-                          label: Text(status),
-                          selected: isSelected,
-                          onSelected: (_) =>
-                              setState(() => _selectedStatus = status),
-                          backgroundColor: const Color(0xFF0A0E1A),
-                          selectedColor: const Color(0xFF1A237E),
-                          labelStyle: TextStyle(
-                            color: isSelected
-                                ? Colors.white
-                                : Colors.white54,
+                    child: Row(
+                      children: _statusFilters.map((status) {
+                        final isSelected = _selectedStatus == status;
+                        return Padding(
+                          padding: const EdgeInsets.only(right: 8),
+                          child: GestureDetector(
+                            onTap: () => setState(
+                                () => _selectedStatus = status),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 8),
+                              decoration: BoxDecoration(
+                                gradient: isSelected
+                                    ? const LinearGradient(
+                                        colors: [
+                                          Color(0xFF833AB4),
+                                          Color(0xFFE1306C),
+                                        ],
+                                      )
+                                    : null,
+                                color: isSelected
+                                    ? null
+                                    : const Color(0xFFF5F5F5),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Text(
+                                status,
+                                style: TextStyle(
+                                  color: isSelected
+                                      ? Colors.white
+                                      : const Color(0xFF262626),
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 13,
+                                ),
+                              ),
+                            ),
                           ),
-                        ),
-                      );
-                    }).toList(),
+                        );
+                      }).toList(),
+                    ),
                   ),
                 ),
+                Divider(color: Colors.grey.shade200, height: 1),
 
                 // Problems list
                 Expanded(
                   child: _filteredProblems.isEmpty
-                      ? const Center(
-                          child: Text(
-                            'No problems found',
-                            style: TextStyle(
-                                color: Colors.white54, fontSize: 16),
+                      ? Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.check_circle_outline,
+                                  size: 60,
+                                  color: Colors.grey.shade300),
+                              const SizedBox(height: 12),
+                              const Text(
+                                'No problems found',
+                                style: TextStyle(
+                                  color: Color(0xFF8E8E8E),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
                           ),
                         )
                       : ListView.builder(
                           padding: const EdgeInsets.all(16),
                           itemCount: _filteredProblems.length,
                           itemBuilder: (context, index) {
-                            final problem = _filteredProblems[index];
-                            return _problemCard(problem);
+                            return _problemCard(
+                                _filteredProblems[index]);
                           },
                         ),
                 ),
@@ -160,88 +215,134 @@ class _ProblemsScreenState extends State<ProblemsScreen> {
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),
         decoration: BoxDecoration(
-          color: const Color(0xFF1C2333),
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(
-              color: severityColor.withOpacity(0.4), width: 1.5),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 12,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
+        child: Column(
+          children: [
+            // Severity bar at top
+            Container(
+              height: 4,
+              decoration: BoxDecoration(
+                color: severityColor,
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(16),
+                  topRight: Radius.circular(16),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(Icons.warning_amber,
-                      color: severityColor, size: 20),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      problem['type'],
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          problem['type'],
+                          style: const TextStyle(
+                            color: Color(0xFF262626),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                          ),
+                        ),
                       ),
-                    ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: statusColor.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text(
+                          problem['status'],
+                          style: TextStyle(
+                            color: statusColor,
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: statusColor.withOpacity(0.15),
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                          color: statusColor.withOpacity(0.5)),
+                  const SizedBox(height: 6),
+                  Row(
+                    children: [
+                      Icon(Icons.router_outlined,
+                          size: 14, color: Colors.grey.shade400),
+                      const SizedBox(width: 4),
+                      Text(
+                        problem['deviceName'],
+                        style: const TextStyle(
+                          color: Color(0xFF8E8E8E),
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    problem['description'],
+                    style: const TextStyle(
+                      color: Color(0xFFB0B0B0),
+                      fontSize: 12,
                     ),
-                    child: Text(
-                      problem['status'],
-                      style: TextStyle(
-                          color: statusColor,
-                          fontSize: 11,
-                          fontWeight: FontWeight.bold),
-                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 12),
+                  Divider(color: Colors.grey.shade100, height: 1),
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 12,
+                        backgroundColor:
+                            const Color(0xFF833AB4).withOpacity(0.1),
+                        child: Text(
+                          problem['assignedTo'][0].toUpperCase(),
+                          style: const TextStyle(
+                            color: Color(0xFF833AB4),
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        problem['assignedTo'],
+                        style: const TextStyle(
+                          color: Color(0xFF8E8E8E),
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      const Spacer(),
+                      Icon(Icons.access_time,
+                          size: 13, color: Colors.grey.shade400),
+                      const SizedBox(width: 4),
+                      Text(
+                        problem['time'],
+                        style: const TextStyle(
+                          color: Color(0xFFB0B0B0),
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
-              const SizedBox(height: 8),
-              Text(
-                problem['deviceName'],
-                style:
-                    const TextStyle(color: Colors.white70, fontSize: 13),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                problem['description'],
-                style: const TextStyle(
-                    color: Colors.white38, fontSize: 12),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-              const SizedBox(height: 10),
-              Row(
-                children: [
-                  const Icon(Icons.person,
-                      color: Colors.white38, size: 14),
-                  const SizedBox(width: 4),
-                  Text(
-                    problem['assignedTo'],
-                    style: const TextStyle(
-                        color: Colors.white38, fontSize: 12),
-                  ),
-                  const Spacer(),
-                  const Icon(Icons.access_time,
-                      color: Colors.white38, size: 14),
-                  const SizedBox(width: 4),
-                  Text(
-                    problem['time'],
-                    style: const TextStyle(
-                        color: Colors.white38, fontSize: 12),
-                  ),
-                ],
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

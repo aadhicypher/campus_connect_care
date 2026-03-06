@@ -22,9 +22,9 @@ class _ProblemDetailScreenState extends State<ProblemDetailScreen> {
   Color _statusColor(String status) {
     switch (status) {
       case 'Open':
-        return const Color(0xFFFF1744);
+        return const Color(0xFFE53935);
       case 'In Progress':
-        return const Color(0xFFFFD600);
+        return const Color(0xFFFFB300);
       case 'Resolved':
         return const Color(0xFF00C853);
       default:
@@ -35,9 +35,9 @@ class _ProblemDetailScreenState extends State<ProblemDetailScreen> {
   Color _severityColor(String severity) {
     switch (severity) {
       case 'critical':
-        return const Color(0xFFFF1744);
+        return const Color(0xFFE53935);
       case 'warning':
-        return const Color(0xFFFFD600);
+        return const Color(0xFFFFB300);
       default:
         return const Color(0xFF00C853);
     }
@@ -59,6 +59,8 @@ class _ProblemDetailScreenState extends State<ProblemDetailScreen> {
         backgroundColor:
             success ? _statusColor(newStatus) : Colors.red,
         behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10)),
       ),
     );
   }
@@ -71,110 +73,179 @@ class _ProblemDetailScreenState extends State<ProblemDetailScreen> {
     final statusColor = _statusColor(_currentStatus);
 
     return Scaffold(
-      backgroundColor: const Color(0xFF0A0E1A),
+      backgroundColor: const Color(0xFFFAFAFA),
       appBar: AppBar(
-        backgroundColor: const Color(0xFF1A237E),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        centerTitle: true,
         title: const Text(
           'Problem Details',
-          style:
-              TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            color: Color(0xFF262626),
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+          ),
         ),
-        iconTheme: const IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: Color(0xFF262626)),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1),
+          child: Divider(color: Colors.grey.shade200, height: 1),
+        ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Problem header
+
+            // Problem header card
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: const Color(0xFF1C2333),
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(
-                    color: severityColor.withOpacity(0.4), width: 1.5),
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 12,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
               ),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      Icon(Icons.warning_amber,
-                          color: severityColor, size: 24),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: Text(
-                          problem['type'],
+                  // Severity color bar
+                  Container(
+                    height: 5,
+                    decoration: BoxDecoration(
+                      color: severityColor,
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(16),
+                        topRight: Radius.circular(16),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: severityColor.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Icon(Icons.warning_amber_rounded,
+                                  color: severityColor, size: 22),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Text(
+                                problem['type'],
+                                style: const TextStyle(
+                                  color: Color(0xFF262626),
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          problem['description'],
                           style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF8E8E8E),
+                            fontSize: 14,
+                            height: 1.5,
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    problem['description'],
-                    style: const TextStyle(
-                        color: Colors.white70, fontSize: 14),
-                  ),
-                  const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      const Icon(Icons.router,
-                          color: Colors.white38, size: 16),
-                      const SizedBox(width: 6),
-                      Text(
-                        problem['deviceName'],
-                        style: const TextStyle(
-                            color: Colors.white54, fontSize: 13),
-                      ),
-                      const Spacer(),
-                      const Icon(Icons.access_time,
-                          color: Colors.white38, size: 16),
-                      const SizedBox(width: 6),
-                      Text(
-                        problem['time'],
-                        style: const TextStyle(
-                            color: Colors.white54, fontSize: 13),
-                      ),
-                    ],
+                        const SizedBox(height: 12),
+                        Divider(color: Colors.grey.shade100),
+                        const SizedBox(height: 8),
+                        Row(
+                          children: [
+                            Icon(Icons.router_outlined,
+                                size: 15,
+                                color: Colors.grey.shade400),
+                            const SizedBox(width: 6),
+                            Text(
+                              problem['deviceName'],
+                              style: const TextStyle(
+                                color: Color(0xFF8E8E8E),
+                                fontSize: 13,
+                              ),
+                            ),
+                            const Spacer(),
+                            Icon(Icons.access_time,
+                                size: 15,
+                                color: Colors.grey.shade400),
+                            const SizedBox(width: 6),
+                            Text(
+                              problem['time'],
+                              style: const TextStyle(
+                                color: Color(0xFF8E8E8E),
+                                fontSize: 13,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
 
-            // Assigned to
+            // Assigned to + status card
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: const Color(0xFF1C2333),
-                borderRadius: BorderRadius.circular(14),
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 12,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
               ),
               child: Row(
                 children: [
-                  const CircleAvatar(
-                    backgroundColor: Color(0xFF1A237E),
-                    radius: 22,
-                    child: Icon(Icons.person, color: Colors.white),
+                  CircleAvatar(
+                    radius: 24,
+                    backgroundColor:
+                        const Color(0xFF833AB4).withOpacity(0.1),
+                    child: Text(
+                      problem['assignedTo'][0].toUpperCase(),
+                      style: const TextStyle(
+                        color: Color(0xFF833AB4),
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                   const SizedBox(width: 14),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text('Assigned To',
-                          style: TextStyle(
-                              color: Colors.white38, fontSize: 12)),
+                      const Text(
+                        'Assigned To',
+                        style: TextStyle(
+                          color: Color(0xFF8E8E8E),
+                          fontSize: 12,
+                        ),
+                      ),
                       Text(
                         problem['assignedTo'],
                         style: const TextStyle(
-                          color: Colors.white,
+                          color: Color(0xFF262626),
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
@@ -186,10 +257,8 @@ class _ProblemDetailScreenState extends State<ProblemDetailScreen> {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
-                      color: statusColor.withOpacity(0.15),
+                      color: statusColor.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(20),
-                      border:
-                          Border.all(color: statusColor.withOpacity(0.5)),
                     ),
                     child: Text(
                       _currentStatus,
@@ -205,15 +274,20 @@ class _ProblemDetailScreenState extends State<ProblemDetailScreen> {
             ),
             const SizedBox(height: 16),
 
-            // Fix steps
-            const Text(
-              '🔧 Steps to Resolve',
-              style: TextStyle(
-                  color: Colors.white,
+            // Steps header
+            const Padding(
+              padding: EdgeInsets.only(left: 4, bottom: 12),
+              child: Text(
+                'Steps to Resolve',
+                style: TextStyle(
+                  color: Color(0xFF262626),
                   fontSize: 16,
-                  fontWeight: FontWeight.bold),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
-            const SizedBox(height: 12),
+
+            // Steps list
             ...steps.asMap().entries.map((entry) {
               final index = entry.key;
               final step = entry.value;
@@ -221,8 +295,15 @@ class _ProblemDetailScreenState extends State<ProblemDetailScreen> {
                 margin: const EdgeInsets.only(bottom: 10),
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF1C2333),
-                  borderRadius: BorderRadius.circular(12),
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(14),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.04),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
                 ),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -231,7 +312,12 @@ class _ProblemDetailScreenState extends State<ProblemDetailScreen> {
                       width: 28,
                       height: 28,
                       decoration: BoxDecoration(
-                        color: const Color(0xFF1A237E),
+                        gradient: const LinearGradient(
+                          colors: [
+                            Color(0xFF833AB4),
+                            Color(0xFFE1306C),
+                          ],
+                        ),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Center(
@@ -250,83 +336,117 @@ class _ProblemDetailScreenState extends State<ProblemDetailScreen> {
                       child: Text(
                         step.toString(),
                         style: const TextStyle(
-                            color: Colors.white70, fontSize: 14),
+                          color: Color(0xFF262626),
+                          fontSize: 14,
+                          height: 1.4,
+                        ),
                       ),
                     ),
                   ],
                 ),
               );
             }),
-            const SizedBox(height: 24),
+            const SizedBox(height: 20),
 
             // Action buttons
             if (_isUpdating)
               const Center(
-                  child: CircularProgressIndicator(color: Colors.white))
-            else if (_currentStatus == 'Open')
-              SizedBox(
-                width: double.infinity,
-                height: 52,
-                child: ElevatedButton.icon(
-                  onPressed: () => _updateStatus('In Progress'),
-                  icon: const Icon(Icons.play_arrow, color: Colors.white),
-                  label: const Text('Mark as In Progress',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold)),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFFFD600),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12)),
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    Color(0xFFE1306C),
                   ),
                 ),
               )
+            else if (_currentStatus == 'Open')
+              _actionButton(
+                label: 'Mark as In Progress',
+                icon: Icons.play_arrow_rounded,
+                colors: [
+                  const Color(0xFFFFB300),
+                  const Color(0xFFFF8F00),
+                ],
+                onTap: () => _updateStatus('In Progress'),
+              )
             else if (_currentStatus == 'In Progress')
-              SizedBox(
-                width: double.infinity,
-                height: 52,
-                child: ElevatedButton.icon(
-                  onPressed: () => _updateStatus('Resolved'),
-                  icon: const Icon(Icons.check_circle, color: Colors.white),
-                  label: const Text('Mark as Resolved',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold)),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF00C853),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12)),
-                  ),
-                ),
+              _actionButton(
+                label: 'Mark as Resolved',
+                icon: Icons.check_circle_rounded,
+                colors: [
+                  const Color(0xFF00C853),
+                  const Color(0xFF00897B),
+                ],
+                onTap: () => _updateStatus('Resolved'),
               )
             else if (_currentStatus == 'Resolved')
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF00C853).withOpacity(0.15),
-                  borderRadius: BorderRadius.circular(12),
+                  color: const Color(0xFF00C853).withOpacity(0.08),
+                  borderRadius: BorderRadius.circular(14),
                   border: Border.all(
-                      color: const Color(0xFF00C853).withOpacity(0.4)),
+                    color: const Color(0xFF00C853).withOpacity(0.3),
+                  ),
                 ),
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.check_circle,
+                    Icon(Icons.check_circle_rounded,
                         color: Color(0xFF00C853), size: 22),
                     SizedBox(width: 10),
-                    Text('Problem Resolved ✓',
-                        style: TextStyle(
-                          color: Color(0xFF00C853),
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                        )),
+                    Text(
+                      'Problem Resolved ✓',
+                      style: TextStyle(
+                        color: Color(0xFF00C853),
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ],
                 ),
               ),
             const SizedBox(height: 30),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _actionButton({
+    required String label,
+    required IconData icon,
+    required List<Color> colors,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: double.infinity,
+        height: 52,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(colors: colors),
+          borderRadius: BorderRadius.circular(14),
+          boxShadow: [
+            BoxShadow(
+              color: colors[0].withOpacity(0.3),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, color: Colors.white, size: 20),
+            const SizedBox(width: 8),
+            Text(
+              label,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           ],
         ),
       ),
