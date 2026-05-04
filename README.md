@@ -1,5 +1,5 @@
 [# campus_connect_care
-A campus network monitoring system for common network faults and that provides guided troubleshooting.](https://github.com/SourAvCoder441/campus_connect_care
+A campus network monitoring system for common network faults and that provides guided troubleshooting.]
 
 # Campus Connect‑Care – Network Diagnostic Tool
 
